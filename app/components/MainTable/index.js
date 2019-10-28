@@ -1,0 +1,24 @@
+/**
+ *
+ * MainTable
+ *
+ */
+
+import React from 'react';
+// import PropTypes from 'prop-types';
+// import styled from 'styled-components';
+
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
+function MainTable() {
+  return (
+    <div>
+      <FormattedMessage {...messages.header} />
+    </div>
+  );
+}
+
+MainTable.propTypes = {};
+
+export default MainTable;
