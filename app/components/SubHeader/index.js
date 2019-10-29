@@ -7,6 +7,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 // import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 function SubHeader(props) {
   return (
@@ -22,13 +23,37 @@ function SubHeader(props) {
     >
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          placeItems: 'center center',
+          display: 'flex',
+          padding: '0 15px',
         }}
       >
-        <a href="/pages">{props.path} / </a>
-        <div>Sub pages</div>
+        <Link
+          to={`/${props.path.slice(1, -10)}`}
+          style={{
+            border: '2px solid transparent',
+            borderRight: '20px',
+          }}
+        >
+          {props.params.subpages ? (
+            <div style={{ display: 'flex' }}>
+              <div>{props.path.slice(1, -10)}</div>
+            </div>
+          ) : (
+            <div>{props.path.slice(1)}</div>
+          )}
+        </Link>
+        {props.params.subpages ? (
+          <div
+            style={{
+              display: 'flex',
+            }}
+          >
+            <div style={{ padding: '0 15px' }}>/</div>
+            <div>{props.params.subpages}</div>
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
       <div
         style={{

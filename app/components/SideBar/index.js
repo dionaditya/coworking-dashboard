@@ -20,9 +20,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
-    background: 'white',
     position: 'relative',
     height: '100%',
+    zIndex: 0,
   },
   drawer: {
     width: drawerWidth,
@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
   drawerPaper: {
     width: drawerWidth,
     position: 'static',
+    height: '100%',
     background: 'white',
   },
 }));
@@ -50,7 +51,7 @@ function SideBar() {
         }}
       >
         <List>
-          <Link to="/">
+          <Link to="/dashboard">
             <ListItem
               button
               key="dashboard"

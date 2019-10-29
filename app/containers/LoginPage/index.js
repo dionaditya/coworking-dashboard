@@ -27,94 +27,132 @@ export function LoginPage() {
   useInjectSaga({ key: 'loginPage', saga });
 
   return (
-    <div style={{
-      display: 'grid',
-      height: '100vh',
-      background: 'white',
-      margin: 'auto',
-      width: '100%',
-      paddingTop: '50px',
-      paddingBottom: '40px',
-      justifyItems: 'center',
-    }}>
+    <div
+      style={{
+        display: 'grid',
+        height: '100vh',
+        background: 'white',
+        margin: 'auto',
+        width: '100%',
+        paddingTop: '30px',
+        paddingBottom: '40px',
+        justifyItems: 'center',
+      }}
+    >
       <Container>
-        <div style={{
-          background: 'url(https://images.unsplash.com/photo-1562184760-a11b3cf7c169?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80)',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover'
-        }}>
-
-        </div>
-        <div style={{
-          background: 'white',
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          padding: '30px 50px 100px 50px'
-        }}>
-            <div style={{
+        <div
+          style={{
+            background:
+              'url(https://images.unsplash.com/photo-1562184760-a11b3cf7c169?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80)',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+          }}
+        />
+        <div
+          style={{
+            background: 'white',
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            padding: '30px 50px 100px 50px',
+          }}
+        >
+          <div
+            style={{
               fontWeight: 'bold',
               fontSize: '36px',
-              textAlign: 'center'
-            }}>
-              LOGO
-            </div>
-            <p style={{
+              textAlign: 'center',
+            }}
+          >
+            LOGO
+          </div>
+          <p
+            style={{
               fontSize: '12px',
               textAlign: 'center',
               color: '#404040',
-            }}>Welcome to Admin Coworking Dashboard</p>
-            <form>
-              <TextInput /> 
-              <p style={{
+            }}
+          >
+            Welcome to Admin Coworking Dashboard
+          </p>
+          <form>
+            <TextInput />
+            <p
+              style={{
                 color: '#ED2B2E',
-                fontSize: '10px'
-              }}>Email has been wrong</p>
-              <TextFieldPassword />
-              <p style={{
+                fontSize: '10px',
+                marginTop: '5px',
+              }}
+            >
+              Email has been wrong
+            </p>
+            <TextFieldPassword />
+            <p
+              style={{
                 color: '#ED2B2E',
-                fontSize: '10px'
-              }}>Invalid password</p>
-            </form>
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: '0.9fr 0.9fr',
-                alignItems: 'center',
-                gridGap: '20px',
-                marginBottom: '20px'
-              }}>
-                  <div style={{
-                    display: 'flex',
-                    placeItems: 'center center',
-                    background: 'pink',
-                    fontSize: '12px'
-                  }}>
-                      <Checkboxes />
-                      <div>Remember me</div>
-                  </div>
-                  <div style={{
-                    fontSize: "12px",
-                    color: "#FF5B5B",
-                    fontWeight: "bold",
-                    textAlign: 'right'
-                  }}>Forgot password?</div>
-              </div>          
-            <ButtonMedium />
-            <div style={{
+                fontSize: '10px',
+              }}
+            >
+              Invalid password
+            </p>
+          </form>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '0.9fr 0.9fr',
+              alignItems: 'center',
+              gridGap: '20px',
+              marginBottom: '20px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                placeItems: 'center center',
+                background: 'pink',
+                fontSize: '12px',
+              }}
+            >
+              <Checkboxes />
+              <div>Remember me</div>
+            </div>
+            <div
+              style={{
+                fontSize: '12px',
+                color: '#FF5B5B',
+                fontWeight: 'bold',
+                textAlign: 'right',
+              }}
+            >
+              Forgot password?
+            </div>
+          </div>
+          <ButtonMedium />
+          <div
+            style={{
               fontSize: '14px',
               fontWeight: 'bold',
               display: 'flex',
               placeItems: 'center center',
               margin: 'auto',
-              marginTop: '30px'
-            }}>
-                    <div style={{
-                      borderRight: '4px solid transparent'
-                    }}>Don't have account?</div>
-                    <div style={{
-                      color: '#FF5B5B',
-                    }}>Register</div>
+              marginTop: '30px',
+            }}
+          >
+            <div
+              style={{
+                borderRight: '4px solid transparent',
+              }}
+            >
+              Don't have account?
             </div>
+            <div
+              style={{
+                color: '#FF5B5B',
+              }}
+            >
+              Register
+            </div>
+          </div>
         </div>
       </Container>
     </div>

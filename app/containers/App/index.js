@@ -12,6 +12,7 @@ import { Switch, Route } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import Dashboard from 'containers/Dashboard/Loadable';
+import HomePage from 'containers/HomePage/Loadable';
 
 const path = [
   'point-of-sales',
@@ -26,6 +27,25 @@ const path = [
   'settings',
 ];
 
+const TabName = [
+  {
+    name: 'Meeting-rooms',
+    path: 'meeting-rooms',
+  },
+  {
+    name: 'Event Space',
+    path: 'event-space',
+  },
+  {
+    name: 'Private Office',
+    path: 'private-office',
+  },
+  {
+    name: 'Membership',
+    path: 'membership',
+  },
+];
+
 export default function App() {
   return (
     <div>
@@ -36,11 +56,12 @@ export default function App() {
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
       <Switch>
-        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/dashboard" component={Dashboard} />
+        <Route path={`/settings/:subpages`} component={Dashboard} />
         {path.map((key, i) => {
-          return <Route path={`/${key}`} component={Dashboard} />;
+          return <Route exact path={`/${key}`} component={Dashboard} />;
         })}
-        <Route path="/login" component={LoginPage} />
+        <Route path="/" component={LoginPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
     </div>
