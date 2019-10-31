@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function TextInput() {
+function TextInput(props) {
   const classes = useStyles();
   return (
     <div>
@@ -31,6 +31,9 @@ function TextInput() {
         placeholder="Email"
         type="email"
         variant="outlined"
+        onChange={e => props.onChangeForm(e)}
+        value={props.value.email}
+        name="email"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

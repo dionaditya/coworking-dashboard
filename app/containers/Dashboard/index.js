@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -25,6 +25,8 @@ import MembershipSettingTable from 'components/MembershipSettingTable';
 import PrivateOfficeSettingTable from 'components/PrivateOfficeSettingTable';
 import MeetingroomsSettingTable from 'components/MeetingroomsSettingTable';
 import SettingNavigationTab from 'components/SettingNavigationTab';
+import { logout } from '../LoginPage/actions';
+import { Redirect } from 'react-router-dom';
 
 const TableSettings = props => {
   switch (props.params) {
@@ -124,6 +126,20 @@ export function Dashboard(props) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
 
+  const [isSignedIn, setSignedIn] = useState(true);
+
+  useEffect(() => {
+    if (props.loggedIn !== undefined) {
+      if (!props.loggedIn.loggedIn) {
+        setSignedIn(false);
+      }
+    }
+  });
+
+  if (!isSignedIn) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <div>
       <div
@@ -133,7 +149,7 @@ export function Dashboard(props) {
           gridGap: '5px',
         }}
       >
-        <NavBar />
+        <NavBar logout={props.signOut} />
         <SubHeader path={props.match.path} params={props.match.params} />
         <div
           style={{
@@ -166,13 +182,18 @@ Dashboard.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = createStructuredSelector({
-  dashboard: makeSelectDashboard(),
+/* use State from Login state*/
+const mapStateToProps = state => ({
+  loading: state.loginPage,
+  loggedIn: state.loginPage,
+  user: state.loginPage,
+  error: state.loginPage,
 });
 
+/* use State from Login state*/
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    signOut: () => dispatch(logout()),
   };
 }
 

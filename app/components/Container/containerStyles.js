@@ -4,7 +4,6 @@ const containerStyles = css`
   width: 50%;
   background-position: center;
   background-repeat: no-repeat;
-  height: 100%;
   display: grid;
   grid-template-columns: 0.8fr 1fr;
   position: relative;

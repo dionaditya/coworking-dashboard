@@ -7,7 +7,6 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import Toolbar from '@material-ui/core/Toolbar';
 import { styled, makeStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import 'tabler-react/dist/Tabler.css';
@@ -28,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function NavBar() {
+function NavBar(props) {
   const classes = useStyles();
   return (
     <div>
@@ -83,7 +82,7 @@ function NavBar() {
                   badgeType: 'success',
                 },
                 { isDivider: true },
-                { value: 'Logout' },
+                { value: 'Logout', onClick: props.logout },
               ]}
             />
           </div>
