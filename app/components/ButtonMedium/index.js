@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function ButtonMedium() {
+function ButtonMedium(props) {
   const classes = useStyles();
   return (
     <div
@@ -29,8 +29,12 @@ function ButtonMedium() {
         width: '100%',
       }}
     >
-      <Button variant="contained" className={classes.button}>
-        LOGIN
+      <Button
+        variant="contained"
+        className={classes.button}
+        onClick={props.onClickButton}
+      >
+        {props.children}
       </Button>
     </div>
   );

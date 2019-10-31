@@ -15,7 +15,13 @@
  *    }
  */
 
-import { LOAD_REPOS, LOAD_REPOS_SUCCESS, LOAD_REPOS_ERROR } from './constants';
+import {
+  LOAD_REPOS,
+  LOAD_REPOS_SUCCESS,
+  LOAD_REPOS_ERROR,
+  SIGN_IN_EMAIL,
+  SIGN_ERROR,
+} from './constants';
 
 /**
  * Load the repositories, this action starts the request saga
@@ -57,3 +63,65 @@ export function repoLoadingError(error) {
     error,
   };
 }
+
+export function signInWithEmail(data) {
+  return {
+    type: SIGN_IN_EMAIL,
+    data,
+  };
+}
+
+export function signInError(error) {
+  return {
+    type: SIGN_ERROR,
+    error,
+  };
+}
+
+/*
+ *
+ * LoginPage actions
+ *
+ */
+
+export const types = {
+  LOGIN: {
+    REQUEST: 'LOGIN.REQUEST',
+    SUCCESS: 'LOGIN.SUCCESS',
+    FAILURE: 'LOGIN.FAILURE',
+  },
+  LOGOUT: {
+    REQUEST: 'LOGOUT.REQUEST',
+    SUCCESS: 'LOGOUT.SUCCESS',
+    FAILURE: 'LOGOUT.FAILURE',
+  },
+};
+
+export const login = () => ({
+  type: types.LOGIN.REQUEST,
+});
+
+export const loginSuccess = user => ({
+  type: types.LOGIN.SUCCESS,
+  user,
+});
+
+export const loginFailure = error => ({
+  type: types.LOGIN.FAILURE,
+  error,
+});
+
+export function logout() {
+  return {
+    type: types.LOGOUT.REQUEST,
+  };
+}
+
+export const logoutSuccess = () => ({
+  type: types.LOGOUT.SUCCESS,
+});
+
+export const logoutFailure = error => ({
+  type: types.LOGOUT.FAILURE,
+  error,
+});

@@ -6,14 +6,13 @@
 
 // @flow
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectLoginPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Container from '../../components/Container';
@@ -21,10 +20,55 @@ import Checkboxes from 'components/Checkboxes';
 import TextInput from '../../components/TextInput';
 import TextFieldPassword from '../../components/TextFieldPassword';
 import ButtonMedium from '../../components/ButtonMedium';
+import { login, loginEmail } from './actions';
+import { Redirect } from 'react-router-dom';
 
-export function LoginPage() {
+export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
+  const [loadingMoment, setLoading] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [formValue, setValue] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (loggedIn != undefined) {
+      setLoading(false);
+      if (loggedIn.error) {
+        setError(true);
+      }
+      if (loggedIn.user) {
+        setLoggedIn(true);
+      }
+    }
+  }, [loggedIn]);
+
+  const handleChange = e => {
+    const name = e.target.name;
+    setValue({
+      ...formValue,
+      [name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    const finishedValue = {
+      email: formValue.email,
+      password: formValue.password,
+    };
+    signInWithEmail(finishedValue.email, finishedValue.password);
+  };
+
+  if (loadingMoment) {
+    return <div>Loading</div>;
+  }
+
+  if (isLoggedIn) {
+    return <Redirect to="/dashboard">login</Redirect>;
+  }
 
   return (
     <div
@@ -34,9 +78,8 @@ export function LoginPage() {
         background: 'white',
         margin: 'auto',
         width: '100%',
-        paddingTop: '30px',
-        paddingBottom: '40px',
         justifyItems: 'center',
+        padding: '30px 0px 30px 0px',
       }}
     >
       <Container>
@@ -54,7 +97,7 @@ export function LoginPage() {
             background: 'white',
             display: 'grid',
             gridTemplateColumns: '1fr',
-            padding: '30px 50px 100px 50px',
+            padding: '30px 50px 0px 50px',
           }}
         >
           <div
@@ -71,30 +114,38 @@ export function LoginPage() {
               fontSize: '12px',
               textAlign: 'center',
               color: '#404040',
+              marginTop: '-20px',
             }}
           >
             Welcome to Admin Coworking Dashboard
           </p>
-          <form>
-            <TextInput />
-            <p
-              style={{
-                color: '#ED2B2E',
-                fontSize: '10px',
-                marginTop: '5px',
-              }}
-            >
-              Email has been wrong
-            </p>
-            <TextFieldPassword />
-            <p
-              style={{
-                color: '#ED2B2E',
-                fontSize: '10px',
-              }}
-            >
-              Invalid password
-            </p>
+          <form style={{ marginTop: '-50px' }}>
+            <TextInput onChangeForm={handleChange} value={formValue} />
+            {error ? (
+              <p
+                style={{
+                  color: '#ED2B2E',
+                  fontSize: '10px',
+                }}
+              >
+                Email has been wrong
+              </p>
+            ) : (
+              <div />
+            )}
+            <TextFieldPassword onChangeForm={handleChange} value={formValue} />
+            {error ? (
+              <p
+                style={{
+                  color: '#ED2B2E',
+                  fontSize: '10px',
+                }}
+              >
+                Invalid password
+              </p>
+            ) : (
+              <div />
+            )}
           </form>
           <div
             style={{
@@ -102,7 +153,7 @@ export function LoginPage() {
               gridTemplateColumns: '0.9fr 0.9fr',
               alignItems: 'center',
               gridGap: '20px',
-              marginBottom: '20px',
+              marginTop: '-100px',
             }}
           >
             <div
@@ -127,20 +178,59 @@ export function LoginPage() {
               Forgot password?
             </div>
           </div>
-          <ButtonMedium />
+          <div style={{ marginTop: '-30px' }}>
+            <ButtonMedium onClickButton={handleSubmit}>
+              sign in with email
+            </ButtonMedium>
+            <div
+              style={{
+                display: 'flex',
+                color: 'black',
+                alignItems: 'center',
+                alignSelf: 'center',
+                margin: '10px 0px 10px 0px',
+              }}
+            >
+              <hr
+                style={{
+                  width: '100%',
+                  background: 'black',
+                }}
+              />
+              <div
+                style={{
+                  flexGrow: 1,
+                  flexWrap: 'nowrap',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+              >
+                or
+              </div>
+              <hr
+                style={{
+                  width: '100%',
+                  background: 'black',
+                }}
+              />
+            </div>
+            <ButtonMedium onClickButton={signIn}>
+              sign in with google
+            </ButtonMedium>
+          </div>
           <div
             style={{
               fontSize: '14px',
               fontWeight: 'bold',
               display: 'flex',
-              placeItems: 'center center',
-              margin: 'auto',
-              marginTop: '30px',
+              justifyContent: 'center',
+              margin: '-30px auto 0px auto',
             }}
           >
             <div
               style={{
                 borderRight: '4px solid transparent',
+                textAlign: 'center',
               }}
             >
               Don't have account?
@@ -159,17 +249,24 @@ export function LoginPage() {
   );
 }
 
-LoginPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
-
+/*
 const mapStateToProps = createStructuredSelector({
-  loginPage: makeSelectLoginPage(),
+  repos: makeSelectRepos(),
+  username: makeSelectUsername(),
+  loading: makeSelectLoading(),
+  error: makeSelectError(),
+}); */
+
+const mapStateToProps = state => ({
+  loggedIn: state.loginPage,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    signIn: () => dispatch(login()),
+    signInWithEmail: function hello(email, password) {
+      dispatch(loginEmail(email, password));
+    },
   };
 }
 

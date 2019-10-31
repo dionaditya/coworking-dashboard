@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function TextFieldPassword() {
+function TextFieldPassword(props) {
   const classes = useStyles();
   return (
     <div>
@@ -32,6 +32,9 @@ function TextFieldPassword() {
         type="password"
         placeholder="Password"
         variant="outlined"
+        onChange={e => props.onChangeForm(e)}
+        value={props.value.password}
+        name="password"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
