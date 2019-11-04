@@ -15,11 +15,34 @@ const selectLoginPageDomain = state => state.loginPage || initialState;
  * Default selector used by LoginPage
  */
 
-const makeSelectLoginPage = () =>
+const makeSelectUser = () =>
   createSelector(
     selectLoginPageDomain,
-    substate => substate,
+    substate => substate.user,
   );
 
-export default makeSelectLoginPage;
-export { selectLoginPageDomain };
+const makeSelectLoading = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.loading,
+  );
+
+const makeSelectLoggedIn = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.loggedIn,
+  );
+
+const makeSelectError = () =>
+  createSelector(
+    selectLoginPageDomain,
+    substate => substate.error,
+  );
+
+export {
+  selectLoginPageDomain,
+  makeSelectUser,
+  makeSelectLoading,
+  makeSelectError,
+  makeSelectLoggedIn,
+};

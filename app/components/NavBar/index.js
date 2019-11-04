@@ -64,27 +64,31 @@ function NavBar(props) {
               placeItems: 'center center',
             }}
           >
-            <Avatar status="green" imageURL="" />
-            <Dropdown
-              type="button"
-              color="white"
-              arrow
-              icon=""
-              triggerContent="Admin Coworking"
-              itemsObject={[
-                {
-                  value: 'Profile',
-                  icon: 'user',
-                },
-                {
-                  value: 'Notifications',
-                  badge: 'New!',
-                  badgeType: 'success',
-                },
-                { isDivider: true },
-                { value: 'Logout', onClick: props.logout },
-              ]}
-            />
+            <div style={{ marginRight: -70 }}>
+              <Avatar status="green" imageURL="" />
+            </div>
+            <div style={{ marginLeft: -10 }}>
+              <Dropdown
+                type="button"
+                color="white"
+                arrow
+                icon=""
+                triggerContent="Admin Coworking"
+                itemsObject={[
+                  {
+                    value: 'Profile',
+                    icon: 'user',
+                  },
+                  {
+                    value: 'Notifications',
+                    badge: 'New!',
+                    badgeType: 'success',
+                  },
+                  { isDivider: true },
+                  { value: 'Logout', onClick: props.logout },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </StyledAppBar>

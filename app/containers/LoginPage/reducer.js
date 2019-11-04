@@ -40,6 +40,7 @@ const loginPageReducer = (state = initialState, action) =>
         draft.loading = false;
         draft.loggedIn = false;
         draft.error = action.error;
+        console.log('LOGIN FAILED', action.error);
         break;
       case types.LOGOUT.SUCCESS:
         return initialState;

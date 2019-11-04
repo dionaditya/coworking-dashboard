@@ -9,6 +9,7 @@ import React from 'react';
 // import styled from 'styled-components';
 import C3Chart from 'react-c3js';
 import 'c3/c3.css';
+import './line.css';
 
 const BarChart = ({ data }) => (
   <C3Chart
@@ -25,6 +26,63 @@ const BarChart = ({ data }) => (
         data2: '#8CA7C7',
         data3: '#E4E4E4',
       },
+      axes: {
+        data1: 'y',
+        data2: 'y2',
+      },
+    }}
+    axis={{
+      x: {
+        tick: {
+          outer: false,
+        },
+        categories: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        type: 'category',
+      },
+      y: {
+        label: {
+          text: 'Booking (Unit / Packs)',
+          position: 'outer-middle',
+          color: '#FF5B5B',
+
+          // inner-top : default
+          // inner-middle
+          // inner-bottom
+          // outer-top
+          // outer-middle
+          // outer-bottom
+        },
+        tick: {
+          outer: false,
+        },
+      },
+      y2: {
+        show: true,
+        label: {
+          text: 'Y2 Label',
+          position: 'outer-middle',
+          // inner-top : default
+          // inner-middle
+          // inner-bottom
+          // outer-top
+          // outer-middle
+          // outer-bottom
+        },
+        tick: {
+          outer: false,
+        },
+      },
+    }}
+    legend={{
+      show: false,
     }}
   />
 );

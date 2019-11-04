@@ -12,7 +12,7 @@ import { Switch, Route } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import Dashboard from 'containers/Dashboard/Loadable';
-import HomePage from 'containers/HomePage/Loadable';
+import ProtectedRoute from './ProtectedRoute';
 
 const path = [
   'point-of-sales',
@@ -27,25 +27,6 @@ const path = [
   'settings',
 ];
 
-const TabName = [
-  {
-    name: 'Meeting-rooms',
-    path: 'meeting-rooms',
-  },
-  {
-    name: 'Event Space',
-    path: 'event-space',
-  },
-  {
-    name: 'Private Office',
-    path: 'private-office',
-  },
-  {
-    name: 'Membership',
-    path: 'membership',
-  },
-];
-
 export default function App() {
   return (
     <div>
@@ -56,10 +37,12 @@ export default function App() {
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
       <Switch>
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route path={`/settings/:subpages`} component={Dashboard} />
+        <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+        <ProtectedRoute path={`/settings/:subpages`} component={Dashboard} />
         {path.map((key, i) => {
-          return <Route exact path={`/${key}`} component={Dashboard} />;
+          return (
+            <ProtectedRoute exact path={`/${key}`} component={Dashboard} />
+          );
         })}
         <Route path="/" component={LoginPage} />
         <Route path="" component={NotFoundPage} />

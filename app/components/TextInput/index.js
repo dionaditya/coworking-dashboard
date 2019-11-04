@@ -14,10 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles(() => ({
   margin: {
-    margin: '10px 0px 0px 0px',
     width: '100%',
-    fontWeight: 100,
-    height: '50px',
   },
 }));
 
@@ -30,17 +27,9 @@ function TextInput(props) {
         id="input-with-icon-textfield"
         placeholder="Email"
         type="email"
-        variant="outlined"
         onChange={e => props.onChangeForm(e)}
         value={props.value.email}
         name="email"
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <AccountCircle />
-            </InputAdornment>
-          ),
-        }}
       />
     </div>
   );
