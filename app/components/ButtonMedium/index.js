@@ -7,8 +7,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
+import LoadingIndicator from '../LoadingIndicator';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -23,6 +22,29 @@ const useStyles = makeStyles(() => ({
 
 function ButtonMedium(props) {
   const classes = useStyles();
+
+  if (props.isLoading) {
+    return (
+      <div
+        style={{
+          width: '100%',
+        }}
+      >
+        <Button
+          variant="contained"
+          className={classes.button}
+          onClick={props.onClickButton}
+        >
+          {props.children}
+          <LoadingIndicator
+            style={{
+              height: '20px',
+            }}
+          />
+        </Button>
+      </div>
+    );
+  }
   return (
     <div
       style={{

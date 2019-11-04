@@ -22,8 +22,24 @@ import TextFieldPassword from '../../components/TextFieldPassword';
 import ButtonMedium from '../../components/ButtonMedium';
 import { login, loginEmail } from './actions';
 import { Redirect } from 'react-router-dom';
+import PasswordField from 'material-ui-password-field';
+import LoadingIndicator from 'components/LoadingIndicator';
+import { Wrapper } from './Wrapper';
+import {
+  makeSelectUser,
+  makeSelectError,
+  makeSelectLoading,
+  makeSelectLoggedIn,
+} from './selectors';
 
-export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
+export function LoginPage({
+  signIn,
+  loggedIn,
+  signInWithEmail,
+  error,
+  user,
+  loading,
+}) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
   const [loadingMoment, setLoading] = useState(true);
@@ -32,15 +48,33 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
     email: '',
     password: '',
   });
-  const [error, setError] = useState(false);
+  const [isLoading, setLoadings] = useState(false);
+  const [errorCode, setError] = useState({
+    wrongPassword: false,
+    userNotRegistered: false,
+  });
 
   useEffect(() => {
     if (loggedIn != undefined) {
       setLoading(false);
-      if (loggedIn.error) {
-        setError(true);
+      if (error !== null) {
+        console.log('error', error.code);
+        if (error.code === 'auth/wrong-password') {
+          setLoadings(false);
+          setError({
+            ...errorCode,
+            wrongPassword: true,
+          });
+        }
+        if (error.code === 'auth/user-not-found') {
+          setLoadings(false);
+          setError({
+            ...errorCode,
+            userNotRegistered: true,
+          });
+        }
       }
-      if (loggedIn.user) {
+      if (user) {
         setLoggedIn(true);
       }
     }
@@ -55,15 +89,17 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
   };
 
   const handleSubmit = () => {
+    setLoadings(true);
     const finishedValue = {
       email: formValue.email,
       password: formValue.password,
     };
     signInWithEmail(finishedValue.email, finishedValue.password);
+    setLoadings(false);
   };
 
   if (loadingMoment) {
-    return <div>Loading</div>;
+    return <LoadingIndicator>Loading</LoadingIndicator>;
   }
 
   if (isLoggedIn) {
@@ -71,19 +107,10 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
   }
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        height: '100vh',
-        background: 'white',
-        margin: 'auto',
-        width: '100%',
-        justifyItems: 'center',
-        padding: '30px 0px 30px 0px',
-      }}
-    >
+    <Wrapper>
       <Container>
         <div
+          name="image-login"
           style={{
             background:
               'url(https://images.unsplash.com/photo-1562184760-a11b3cf7c169?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80)',
@@ -93,6 +120,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
           }}
         />
         <div
+          name="content-login-wrapper"
           style={{
             background: 'white',
             display: 'grid',
@@ -101,6 +129,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
           }}
         >
           <div
+            name="logo"
             style={{
               fontWeight: 'bold',
               fontSize: '36px',
@@ -110,44 +139,54 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
             LOGO
           </div>
           <p
+            name="logo-caption"
             style={{
               fontSize: '12px',
               textAlign: 'center',
               color: '#404040',
-              marginTop: '-20px',
+              marginTop: '-50px',
             }}
           >
             Welcome to Admin Coworking Dashboard
           </p>
-          <form style={{ marginTop: '-50px' }}>
+          <form name="login-form" style={{ marginTop: '-50px' }}>
             <TextInput onChangeForm={handleChange} value={formValue} />
-            {error ? (
+            {errorCode.userNotRegistered ? (
               <p
                 style={{
                   color: '#ED2B2E',
                   fontSize: '10px',
                 }}
               >
-                Email has been wrong
+                Email has been not registered
               </p>
             ) : (
               <div />
             )}
-            <TextFieldPassword onChangeForm={handleChange} value={formValue} />
-            {error ? (
+            <PasswordField
+              value={formValue.password}
+              name="password"
+              placeholder="Password"
+              style={{
+                marginTop: '10px',
+              }}
+              onChange={e => handleChange(e)}
+            />
+            {errorCode.wrongPassword ? (
               <p
                 style={{
                   color: '#ED2B2E',
                   fontSize: '10px',
                 }}
               >
-                Invalid password
+                Invalid password, or Login with Google
               </p>
             ) : (
               <div />
             )}
           </form>
           <div
+            name="two-column-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: '0.9fr 0.9fr',
@@ -157,6 +196,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
             }}
           >
             <div
+              name="flex-container"
               style={{
                 display: 'flex',
                 placeItems: 'center center',
@@ -168,6 +208,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
               <div>Remember me</div>
             </div>
             <div
+              name="forgot-password"
               style={{
                 fontSize: '12px',
                 color: '#FF5B5B',
@@ -178,8 +219,8 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
               Forgot password?
             </div>
           </div>
-          <div style={{ marginTop: '-30px' }}>
-            <ButtonMedium onClickButton={handleSubmit}>
+          <div name="button-login-container" style={{ marginTop: '-30px' }}>
+            <ButtonMedium onClickButton={handleSubmit} isLoading={isLoading}>
               sign in with email
             </ButtonMedium>
             <div
@@ -219,6 +260,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
             </ButtonMedium>
           </div>
           <div
+            name="flex-container"
             style={{
               fontSize: '14px',
               fontWeight: 'bold',
@@ -245,7 +287,7 @@ export function LoginPage({ signIn, loggedIn, signInWithEmail }) {
           </div>
         </div>
       </Container>
-    </div>
+    </Wrapper>
   );
 }
 
@@ -257,8 +299,11 @@ const mapStateToProps = createStructuredSelector({
   error: makeSelectError(),
 }); */
 
-const mapStateToProps = state => ({
-  loggedIn: state.loginPage,
+const mapStateToProps = createStructuredSelector({
+  loggedIn: makeSelectLoggedIn(),
+  loading: makeSelectLoading(),
+  error: makeSelectError(),
+  user: makeSelectUser(),
 });
 
 function mapDispatchToProps(dispatch) {

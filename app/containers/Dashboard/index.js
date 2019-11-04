@@ -12,7 +12,12 @@ import { compose } from 'redux';
 import 'tabler-react/dist/Tabler.css';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectDashboard from './selectors';
+import {
+  makeSelectError,
+  makeSelectLoggedIn,
+  makeSelectUser,
+  makeSelectLoading,
+} from '../LoginPage/selectors';
 import reducer from './reducer';
 import saga from './saga';
 import SideBar from 'components/SideBar';
@@ -26,22 +31,22 @@ import PrivateOfficeSettingTable from 'components/PrivateOfficeSettingTable';
 import MeetingroomsSettingTable from 'components/MeetingroomsSettingTable';
 import SettingNavigationTab from 'components/SettingNavigationTab';
 import { logout } from '../LoginPage/actions';
-import { Redirect } from 'react-router-dom';
+import queryString from 'query-string';
 
 const TableSettings = props => {
   switch (props.params) {
     case 'event-space':
-      return <EventSpaceSettingTable />;
+      return <EventSpaceSettingTable search={props.search} />;
       break;
     case 'private-office':
-      return <PrivateOfficeSettingTable />;
+      return <PrivateOfficeSettingTable search={props.search} />;
       break;
     case 'membership':
-      return <MembershipSettingTable />;
+      return <MembershipSettingTable search={props.search} />;
       break;
 
     default:
-      return <MeetingroomsSettingTable />;
+      return <MeetingroomsSettingTable search={props.search} />;
   }
 };
 
@@ -75,6 +80,7 @@ const MainContent = props => {
       case '/settings':
         return (
           <div
+            name="container"
             style={{
               width: '100%',
               paddingRight: '30px',
@@ -82,7 +88,7 @@ const MainContent = props => {
             }}
           >
             <SettingNavigationTab params={props.params} />
-            <TableSettings params={props.params} />
+            <TableSettings params={props.params} search={props.search} />
           </div>
         );
 
@@ -92,6 +98,7 @@ const MainContent = props => {
       default:
         return (
           <div
+            name="two-column-grid-container"
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 0.5fr',
@@ -117,7 +124,7 @@ const MainContent = props => {
       }}
     >
       <SettingNavigationTab params={props.params} />
-      <TableSettings params={props.params} />
+      <TableSettings params={props.params} search={props.search} />
     </div>
   );
 };
@@ -125,20 +132,6 @@ const MainContent = props => {
 export function Dashboard(props) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
-
-  const [isSignedIn, setSignedIn] = useState(true);
-
-  useEffect(() => {
-    if (props.loggedIn !== undefined) {
-      if (!props.loggedIn.loggedIn) {
-        setSignedIn(false);
-      }
-    }
-  });
-
-  if (!isSignedIn) {
-    return <Redirect to="/" />;
-  }
 
   return (
     <div>
@@ -160,7 +153,7 @@ export function Dashboard(props) {
           }}
         >
           <div>
-            <SideBar />
+            <SideBar path={props.match.path.slice(1)} />
           </div>
           <div
             style={{
@@ -170,6 +163,7 @@ export function Dashboard(props) {
             <MainContent
               path={props.match.path}
               params={props.match.params.subpages}
+              search={props.location.search}
             />
           </div>
         </div>
@@ -183,11 +177,11 @@ Dashboard.propTypes = {
 };
 
 /* use State from Login state*/
-const mapStateToProps = state => ({
-  loading: state.loginPage,
-  loggedIn: state.loginPage,
-  user: state.loginPage,
-  error: state.loginPage,
+const mapStateToProps = createStructuredSelector({
+  loading: makeSelectLoading(),
+  loggedIn: makeSelectLoggedIn(),
+  user: makeSelectUser(),
+  error: makeSelectError(),
 });
 
 /* use State from Login state*/

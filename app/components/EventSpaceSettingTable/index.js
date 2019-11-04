@@ -6,6 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom';
+import { Add } from '@material-ui/icons';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -113,9 +115,11 @@ export default function EventSpaceSettingTable() {
               border: '2px solid transparent',
               borderRadius: '5px',
               color: 'white',
+              display: 'flex',
             }}
           >
-            Add New Room
+            <Add style={{ flexGrow: 1 }} />
+            <div style={{ flexGrow: 2 }}>Add New Room</div>
           </button>
         </div>
       </div>
@@ -146,7 +150,58 @@ export default function EventSpaceSettingTable() {
                 <StyledTableCell align="left">{row.floorPlan}</StyledTableCell>
                 <StyledTableCell align="left">{row.roomPlan}</StyledTableCell>
                 <StyledTableCell align="left">
-                  <button>Edit</button>
+                  <button
+                    style={{
+                      padding: '8px',
+                      background: '#FF5B5B',
+                      border: '2px solid transparent',
+                      borderRadius: '5px',
+                      width: '200px',
+                      color: 'white',
+                      display: 'flex',
+                    }}
+                  >
+                    <div
+                      style={{
+                        flexGrow: 2,
+                      }}
+                    >
+                      Edit
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexGrow: 1,
+                      }}
+                    >
+                      <div
+                        style={{
+                          flexGrow: 2,
+                        }}
+                      >
+                        |
+                      </div>
+                      <div
+                        id="arrow-icons"
+                        style={{
+                          flexGrow: 1,
+                        }}
+                      >
+                        <svg
+                          width="21"
+                          height="12"
+                          viewBox="0 0 21 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9.95805 11.6817L1.05725 2.88158C0.627971 2.45716 0.627971 1.76907 1.05725 1.34469L2.09539 0.318305C2.52393 -0.105391 3.21848 -0.106207 3.64803 0.316494L10.7353 7.29075L17.8225 0.316494C18.2521 -0.106207 18.9467 -0.105391 19.3752 0.318305L20.4133 1.34469C20.8426 1.76912 20.8426 2.45721 20.4133 2.88158L11.5126 11.6817C11.0833 12.1061 10.3873 12.1061 9.95805 11.6817Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -168,9 +223,10 @@ export default function EventSpaceSettingTable() {
             marginTop: '20px',
             fontSize: '16px',
             flexGrow: 1,
+            display: 'flex',
           }}
         >
-          Show 1 of 8 Result
+          Show <div style={{ color: 'blue' }}>1 of 8</div> Result
         </div>
         <div
           style={{
@@ -183,16 +239,18 @@ export default function EventSpaceSettingTable() {
         >
           {['Previous', 1, 2, 3, 4, 5, 'Next'].map((key, i) => {
             return (
-              <div
-                key={i}
-                style={{
-                  background: 'white',
-                  border: '1px solid #D9DEE4',
-                  padding: '10px',
-                }}
-              >
-                {key}
-              </div>
+              <Link to={`/settings/event-space?page=${i}`}>
+                <div
+                  key={i}
+                  style={{
+                    background: 'white',
+                    border: '1px solid #D9DEE4',
+                    padding: '10px',
+                  }}
+                >
+                  {key}
+                </div>
+              </Link>
             );
           })}
         </div>
