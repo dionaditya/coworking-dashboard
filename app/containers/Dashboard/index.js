@@ -31,7 +31,12 @@ import PrivateOfficeSettingTable from 'components/PrivateOfficeSettingTable';
 import MeetingroomsSettingTable from 'components/MeetingroomsSettingTable';
 import SettingNavigationTab from 'components/SettingNavigationTab';
 import { logout } from '../LoginPage/actions';
-import queryString from 'query-string';
+import Divider from '@material-ui/core/Divider';
+import { styled } from '@material-ui/core/styles';
+
+const StyledDivider = styled(Divider)({
+  marginBottom: '20px',
+});
 
 const TableSettings = props => {
   switch (props.params) {
@@ -85,9 +90,11 @@ const MainContent = props => {
               width: '100%',
               paddingRight: '30px',
               paddingBottom: '30px',
+              marginTop: '80px',
             }}
           >
             <SettingNavigationTab params={props.params} />
+            <StyledDivider />
             <TableSettings params={props.params} search={props.search} />
           </div>
         );
@@ -103,6 +110,7 @@ const MainContent = props => {
               display: 'grid',
               gridTemplateColumns: '1fr 0.5fr',
               gridGap: '30px',
+              paddingTop: '50px',
             }}
           >
             <div>
@@ -121,9 +129,11 @@ const MainContent = props => {
         width: '100%',
         paddingRight: '30px',
         paddingBottom: '30px',
+        marginTop: '80px',
       }}
     >
       <SettingNavigationTab params={props.params} />
+      <StyledDivider />
       <TableSettings params={props.params} search={props.search} />
     </div>
   );
@@ -139,7 +149,6 @@ export function Dashboard(props) {
         style={{
           display: 'grid',
           gridTemplateRows: '55px 60px 1fr',
-          gridGap: '5px',
         }}
       >
         <NavBar logout={props.signOut} />

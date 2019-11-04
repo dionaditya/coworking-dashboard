@@ -34,6 +34,7 @@ function ButtonMedium(props) {
           variant="contained"
           className={classes.button}
           onClick={props.onClickButton}
+          disabled
         >
           {props.children}
           <LoadingIndicator

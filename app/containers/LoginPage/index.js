@@ -42,43 +42,57 @@ export function LoginPage({
 }) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
+
+  const initialState = {
+    wrongPassword: false,
+    userNotRegistered: false,
+    emptyEmail: false,
+    emptyPassword: false,
+  };
+
   const [loadingMoment, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [formValue, setValue] = useState({
-    email: '',
-    password: '',
+    email: null,
+    password: null,
   });
+
   const [isLoading, setLoadings] = useState(false);
+
   const [errorCode, setError] = useState({
     wrongPassword: false,
     userNotRegistered: false,
+    emptyEmail: false,
+    emptyPassword: false,
   });
+
+  const [validation, setValidation] = useState(false);
 
   useEffect(() => {
     if (loggedIn != undefined) {
       setLoading(false);
       if (error !== null) {
-        console.log('error', error.code);
+        console.log(error.code);
         if (error.code === 'auth/wrong-password') {
-          setLoadings(false);
           setError({
-            ...errorCode,
+            ...initialState,
             wrongPassword: true,
           });
+          setLoadings(false);
         }
         if (error.code === 'auth/user-not-found') {
-          setLoadings(false);
           setError({
-            ...errorCode,
+            ...initialState,
             userNotRegistered: true,
           });
+          setLoadings(false);
         }
       }
       if (user) {
         setLoggedIn(true);
       }
     }
-  }, [loggedIn]);
+  }, [loggedIn, error]);
 
   const handleChange = e => {
     const name = e.target.name;
@@ -88,14 +102,46 @@ export function LoginPage({
     });
   };
 
-  const handleSubmit = () => {
-    setLoadings(true);
+  console.log(errorCode);
+
+  function handleValidation() {
+    if (formValue.email === null) {
+      if (formValue.password === null) {
+        setError({
+          ...errorCode,
+          emptyEmail: true,
+          emptyPassword: true,
+        });
+        setValidation(false);
+        setLoadings(false);
+      } else {
+        setError({
+          ...errorCode,
+          emptyEmail: true,
+        });
+        setValidation(false);
+        setLoadings(false);
+      }
+    } else {
+      if (formValue.password === null) {
+        setError({
+          ...errorCode,
+          emptyPassword: true,
+        });
+        setValidation(false);
+        setLoadings(false);
+      }
+    }
     const finishedValue = {
       email: formValue.email,
       password: formValue.password,
     };
     signInWithEmail(finishedValue.email, finishedValue.password);
-    setLoadings(false);
+  }
+
+  const handleSubmit = () => {
+    setLoadings(true);
+    handleValidation();
   };
 
   if (loadingMoment) {
@@ -105,6 +151,8 @@ export function LoginPage({
   if (isLoggedIn) {
     return <Redirect to="/dashboard">login</Redirect>;
   }
+
+  console.log('isLoading', isLoading);
 
   return (
     <Wrapper>
@@ -163,15 +211,40 @@ export function LoginPage({
             ) : (
               <div />
             )}
+            {errorCode.emptyEmail ? (
+              <p
+                style={{
+                  color: '#ED2B2E',
+                  fontSize: '10px',
+                }}
+              >
+                Email tidak boleh kosong
+              </p>
+            ) : (
+              <div />
+            )}
             <PasswordField
               value={formValue.password}
               name="password"
               placeholder="Password"
               style={{
                 marginTop: '10px',
+                width: '100%',
               }}
               onChange={e => handleChange(e)}
             />
+            {errorCode.emptyPassword ? (
+              <p
+                style={{
+                  color: '#ED2B2E',
+                  fontSize: '10px',
+                }}
+              >
+                Password tidak boleh kosong
+              </p>
+            ) : (
+              <div />
+            )}
             {errorCode.wrongPassword ? (
               <p
                 style={{
@@ -179,7 +252,7 @@ export function LoginPage({
                   fontSize: '10px',
                 }}
               >
-                Invalid password, or Login with Google
+                Invalid password
               </p>
             ) : (
               <div />
