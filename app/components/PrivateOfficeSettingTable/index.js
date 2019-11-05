@@ -1,14 +1,13 @@
 import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Link } from 'react-router-dom';
-import { Add } from '@material-ui/icons';
-import queryString from 'query-string';
+import { Add, Edit } from '@material-ui/icons';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -28,16 +27,29 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-function createData(
-  no,
-  name,
-  description,
-  longSpace,
-  floorPlan,
-  roomPlan,
-  action,
-) {
-  return { no, name, description, longSpace, floorPlan, roomPlan, action };
+const columns = [
+  { id: 'id', label: 'Room id' },
+  { id: 'name', label: 'Name' },
+  {
+    id: 'desc',
+    label: 'Description',
+  },
+  {
+    id: 'size',
+    label: 'Size',
+  },
+  {
+    id: 'rate',
+    label: 'Rate',
+  },
+  {
+    id: 'edit',
+    label: 'Action',
+  },
+];
+
+function createData(id, name, desc, size, floorPlan, roomPlan, action) {
+  return { id, name, desc, size, floorPlan, roomPlan, action };
 }
 
 const rows = [
@@ -68,21 +80,30 @@ const rows = [
   ),
 ];
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
-    overflowX: 'auto',
+    marginTop: '20px',
   },
-  table: {
-    minWidth: 700,
+  tableWrapper: {
+    maxHeight: 440,
+    overflow: 'auto',
   },
-}));
+});
 
-export default function PrivateOfficeSettingTable(props) {
+export default function PrivateOfficeSettingTable() {
   const classes = useStyles();
-  const parsed = queryString.parse(props.search);
-  const page = parseInt(parsed.page);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
     <div
@@ -100,20 +121,21 @@ export default function PrivateOfficeSettingTable(props) {
           gridTemplateColumns: '1fr 1fr',
           alignSelf: 'center',
           alignItems: 'center',
+          color: '#438BF4',
         }}
       >
         <div>Private Office List</div>
         <div
           style={{
             display: 'grid',
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             alignSelf: 'center',
           }}
         >
           <button
             style={{
-              width: 250,
-              height: 50,
+              width: 200,
+              height: 40,
               background: '#438BF4',
               border: '2px solid transparent',
               borderRadius: '5px',
@@ -127,154 +149,96 @@ export default function PrivateOfficeSettingTable(props) {
         </div>
       </div>
       <Paper className={classes.root}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>No</StyledTableCell>
-              <StyledTableCell align="left">Name</StyledTableCell>
-              <StyledTableCell align="left">Description</StyledTableCell>
-              <StyledTableCell align="left">Large Space</StyledTableCell>
-              <StyledTableCell align="left">Floor Plan</StyledTableCell>
-              <StyledTableCell align="left">Room plan</StyledTableCell>
-              <StyledTableCell align="left">Part of</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  {row.no}
-                </StyledTableCell>
-                <StyledTableCell align="left">{row.name}</StyledTableCell>
-                <StyledTableCell align="left">
-                  {row.description}
-                </StyledTableCell>
-                <StyledTableCell align="left">{row.longSpace}</StyledTableCell>
-                <StyledTableCell align="left">{row.floorPlan}</StyledTableCell>
-                <StyledTableCell align="left">{row.roomPlan}</StyledTableCell>
-                <StyledTableCell align="left">
-                  <button
-                    style={{
-                      padding: '8px',
-                      background: '#FF5B5B',
-                      border: '2px solid transparent',
-                      borderRadius: '5px',
-                      width: '200px',
-                      color: 'white',
-                      display: 'flex',
-                    }}
+        <div className={classes.tableWrapper}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map(column => (
+                  <StyledTableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
                   >
-                    <div
-                      style={{
-                        flexGrow: 2,
-                      }}
+                    {column.label}
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map(row => {
+                  return (
+                    <StyledTableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
                     >
-                      Edit
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexGrow: 1,
-                      }}
-                    >
-                      <div
-                        style={{
-                          flexGrow: 2,
-                        }}
-                      >
-                        |
-                      </div>
-                      <div
-                        id="arrow-icons"
-                        style={{
-                          flexGrow: 1,
-                        }}
-                      >
-                        <svg
-                          width="21"
-                          height="12"
-                          viewBox="0 0 21 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9.95805 11.6817L1.05725 2.88158C0.627971 2.45716 0.627971 1.76907 1.05725 1.34469L2.09539 0.318305C2.52393 -0.105391 3.21848 -0.106207 3.64803 0.316494L10.7353 7.29075L17.8225 0.316494C18.2521 -0.106207 18.9467 -0.105391 19.3752 0.318305L20.4133 1.34469C20.8426 1.76912 20.8426 2.45721 20.4133 2.88158L11.5126 11.6817C11.0833 12.1061 10.3873 12.1061 9.95805 11.6817Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
+                      {columns.map(column => {
+                        const value = row[column.id];
+                        console.log(column);
+                        if (column.id === 'edit') {
+                          return (
+                            <StyledTableCell
+                              key={column.id}
+                              align={column.align}
+                            >
+                              <button
+                                style={{
+                                  display: 'flex',
+                                  padding: '5px',
+                                  background: '#438BF4',
+                                  color: 'white',
+                                  border: '2px solid transparent',
+                                  borderRadius: '5px',
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    flexGrow: 1,
+                                    marginLeft: '5px',
+                                  }}
+                                >
+                                  <Edit />
+                                </div>
+                                <div style={{ flexGrow: 2, marginLeft: '5px' }}>
+                                  Edit
+                                </div>
+                              </button>
+                            </StyledTableCell>
+                          );
+                        }
+                        return (
+                          <StyledTableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </StyledTableCell>
+                        );
+                      })}
+                    </StyledTableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </div>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          backIconButtonProps={{
+            'aria-label': 'previous page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'next page',
+          }}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </Paper>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'rows',
-          width: '100%',
-          alignItems: 'center',
-          alignSelf: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div
-          style={{
-            marginTop: '20px',
-            fontSize: '16px',
-            flexGrow: 1,
-            display: 'flex',
-          }}
-        >
-          Show <div style={{ color: 'blue' }}>1 of 8</div> Result
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            marginTop: '20px',
-          }}
-        >
-          {['Previous', 1, 2, 3, 4, 5, 'Next'].map((key, i) => {
-            if (i === page) {
-              return (
-                <Link to={`/settings/private-office?page=${i}`}>
-                  <div
-                    key={i}
-                    style={{
-                      background: '#438BF4',
-                      border: '1px solid #D9DEE4',
-                      padding: '10px',
-                      color: 'white',
-                    }}
-                  >
-                    {key}
-                  </div>
-                </Link>
-              );
-            }
-            return (
-              <Link to={`/settings/private-office?page=${i}`}>
-                <div
-                  key={i}
-                  style={{
-                    background: 'white',
-                    border: '1px solid #D9DEE4',
-                    padding: '10px',
-                  }}
-                >
-                  {key}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

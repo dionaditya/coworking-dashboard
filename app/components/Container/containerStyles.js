@@ -7,9 +7,10 @@ const containerStyles = css`
   display: grid;
   grid-template-columns: 0.8fr 1fr;
   position: relative;
-  -webkit-box-shadow: 6px 13px 20px -9px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 6px 13px 20px -9px rgba(0, 0, 0, 0.75);
-  box-shadow: 6px 13px 20px -9px rgba(0, 0, 0, 0.75);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px,
+    rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
 `;
 
 export default containerStyles;

@@ -90,6 +90,7 @@ function SettingNavigationTab(props) {
                     display: 'grid',
                     gridTemplateRows: '1fr 5px',
                     width: '100%',
+                    color: '#9B9B9B',
                     placeItems: 'center center',
                   }}
                 >

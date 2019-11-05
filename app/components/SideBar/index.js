@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     position: 'relative',
-    height: '100%',
     zIndex: 0,
   },
   drawer: {
@@ -31,9 +30,11 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    position: 'static',
-    height: '100%',
+    position: 'fixed',
     background: 'white',
+    height: '100%',
+    marginTop: '110px',
+    boxShadow: '1px 0px 0px #ccc',
   },
 }));
 
