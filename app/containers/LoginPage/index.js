@@ -48,6 +48,13 @@ export function LoginPage({
     userNotRegistered: false,
     emptyEmail: false,
     emptyPassword: false,
+    emailInvalid: false,
+  };
+
+  const state = {
+    wrongPassword: false,
+    userNotRegistered: false,
+    invalidEmail: false,
   };
 
   const [loadingMoment, setLoading] = useState(true);
@@ -60,88 +67,125 @@ export function LoginPage({
   const [isLoading, setLoadings] = useState(false);
 
   const [errorCode, setError] = useState({
-    wrongPassword: false,
-    userNotRegistered: false,
     emptyEmail: false,
     emptyPassword: false,
   });
 
-  const [validation, setValidation] = useState(false);
+  const [errorLogin, setErrorLogin] = useState({
+    wrongPassword: false,
+    userNotRegistered: false,
+    invalidEmail: false,
+  });
 
   useEffect(() => {
     if (loggedIn != undefined) {
       setLoading(false);
       if (error !== null) {
-        console.log(error.code);
         if (error.code === 'auth/wrong-password') {
-          setError({
-            ...initialState,
+          setErrorLogin({
+            ...state,
             wrongPassword: true,
           });
           setLoadings(false);
         }
         if (error.code === 'auth/user-not-found') {
-          setError({
-            ...initialState,
+          setErrorLogin({
+            ...state,
             userNotRegistered: true,
           });
+          console.log('user-not-found', error.code);
+          setLoadings(false);
+        }
+        if (error.code === 'auth/invalid-email') {
+          setErrorLogin(
+            {
+              ...state,
+              invalidEmail: true,
+            },
+            console.log('berhasil'),
+          );
+          console.log('email-invalid', error.code);
           setLoadings(false);
         }
       }
       if (user) {
         setLoggedIn(true);
       }
+      setError({
+        ...initialState,
+      });
     }
   }, [loggedIn, error]);
 
   const handleChange = e => {
     const name = e.target.name;
+    if (formValue.email !== null) {
+      setError({
+        ...errorCode,
+        emptyEmail: false,
+      });
+      setValue({
+        ...formValue,
+        [name]: e.target.value,
+      });
+    }
+    if (formValue.password !== null) {
+      setError({
+        ...errorCode,
+        emptyPassword: false,
+      });
+      setValue({
+        ...formValue,
+        [name]: e.target.value,
+      });
+    }
     setValue({
       ...formValue,
       [name]: e.target.value,
     });
   };
 
-  console.log(errorCode);
+  console.log(formValue, errorCode);
 
   function handleValidation() {
-    if (formValue.email === null) {
-      if (formValue.password === null) {
+    if (formValue.email === null || formValue.email === '') {
+      if (formValue.password === null || formValue.password === '') {
         setError({
-          ...errorCode,
+          ...initialState,
           emptyEmail: true,
           emptyPassword: true,
         });
-        setValidation(false);
         setLoadings(false);
       } else {
         setError({
-          ...errorCode,
+          ...initialState,
           emptyEmail: true,
         });
-        setValidation(false);
         setLoadings(false);
       }
     } else {
-      if (formValue.password === null) {
+      if (formValue.password === '' || formValue.password === null) {
         setError({
-          ...errorCode,
+          ...initialState,
           emptyPassword: true,
         });
-        setValidation(false);
         setLoadings(false);
+      } else {
+        const finishedValue = {
+          email: formValue.email,
+          password: formValue.password,
+        };
+        signInWithEmail(finishedValue.email, finishedValue.password);
       }
     }
-    const finishedValue = {
-      email: formValue.email,
-      password: formValue.password,
-    };
-    signInWithEmail(finishedValue.email, finishedValue.password);
   }
 
   const handleSubmit = () => {
     setLoadings(true);
     handleValidation();
+    setErrorLogin({
+      ...state,
+    });
   };
 
   if (loadingMoment) {
@@ -151,8 +195,6 @@ export function LoginPage({
   if (isLoggedIn) {
     return <Redirect to="/dashboard">login</Redirect>;
   }
-
-  console.log('isLoading', isLoading);
 
   return (
     <Wrapper>
@@ -199,7 +241,7 @@ export function LoginPage({
           </p>
           <form name="login-form" style={{ marginTop: '-50px' }}>
             <TextInput onChangeForm={handleChange} value={formValue} />
-            {errorCode.userNotRegistered ? (
+            {errorLogin.userNotRegistered ? (
               <p
                 style={{
                   color: '#ED2B2E',
@@ -207,6 +249,18 @@ export function LoginPage({
                 }}
               >
                 Email has been not registered
+              </p>
+            ) : (
+              <div />
+            )}
+            {errorLogin.invalidEmail ? (
+              <p
+                style={{
+                  color: '#ED2B2E',
+                  fontSize: '10px',
+                }}
+              >
+                Email salah Silahkan isi email dengan benar
               </p>
             ) : (
               <div />
@@ -245,7 +299,7 @@ export function LoginPage({
             ) : (
               <div />
             )}
-            {errorCode.wrongPassword ? (
+            {errorLogin.wrongPassword ? (
               <p
                 style={{
                   color: '#ED2B2E',
