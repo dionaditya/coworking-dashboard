@@ -38,7 +38,7 @@ export function LoginPage({
   signInWithEmail,
   error,
   user,
-  loading,
+  redirect,
 }) {
   useInjectReducer({ key: 'loginPage', reducer });
   useInjectSaga({ key: 'loginPage', saga });
@@ -60,8 +60,8 @@ export function LoginPage({
   const [loadingMoment, setLoading] = useState(true);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [formValue, setValue] = useState({
-    email: null,
-    password: null,
+    email: '',
+    password: '',
   });
 
   const [isLoading, setLoadings] = useState(false);
@@ -193,7 +193,7 @@ export function LoginPage({
   }
 
   if (isLoggedIn) {
-    return <Redirect to="/dashboard">login</Redirect>;
+    return <Redirect to={redirect || '/dashboard'}>login</Redirect>;
   }
 
   return (

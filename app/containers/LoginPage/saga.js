@@ -7,6 +7,7 @@ import {
   loginSuccess,
   logoutSuccess,
   types,
+  loading,
 } from './actions';
 
 const authProvider = new firebase.auth.GoogleAuthProvider();
@@ -50,8 +51,9 @@ function* loginStatusWatcher() {
   while (true) {
     const { user } = yield take(channel);
 
-    if (user) yield put(loginSuccess(user));
-    else yield put(logoutSuccess());
+    if (user) {
+      yield put(loginSuccess(user));
+    } else yield put(logoutSuccess());
   }
 }
 

@@ -39,9 +39,9 @@ function SettingNavigationTab(props) {
         margin: '20px 0px 20px 0px',
       }}
     >
-      {props.params
+      {props.params.subpages
         ? TabName.map((TabName, i) => {
-            if (props.params === `${TabName.path}`) {
+            if (props.params.subpages === `${TabName.path}`) {
               return (
                 <Link
                   to={`/settings/${TabName.path}`}
@@ -50,6 +50,7 @@ function SettingNavigationTab(props) {
                     fontStyle: 'no-underline',
                     color: 'black',
                   }}
+                  key={i}
                 >
                   <div
                     style={{
@@ -82,6 +83,7 @@ function SettingNavigationTab(props) {
                   fontStyle: 'no-underline',
                   color: 'black',
                 }}
+                key={i}
               >
                 <div
                   style={{
@@ -109,6 +111,7 @@ function SettingNavigationTab(props) {
                     fontStyle: 'no-underline',
                     color: 'black',
                   }}
+                  key={i}
                 >
                   <div
                     style={{
@@ -141,6 +144,7 @@ function SettingNavigationTab(props) {
                   fontStyle: 'no-underline',
                   color: 'black',
                 }}
+                key={i}
               >
                 <div
                   style={{
@@ -149,6 +153,7 @@ function SettingNavigationTab(props) {
                     display: 'grid',
                     gridTemplateRows: '1fr 5px',
                     width: '100%',
+                    color: '#9B9B9B',
                     placeItems: 'center center',
                   }}
                 >
