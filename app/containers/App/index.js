@@ -13,7 +13,7 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import Dashboard from 'containers/Dashboard/Loadable';
 import ProtectedRoute from './ProtectedRoute';
-
+import HomePage from 'containers/HomePage/Loadable';
 const path = [
   'point-of-sales',
   'event',
@@ -27,6 +27,8 @@ const path = [
   'settings',
 ];
 
+const nav = ['meeting-rooms', 'event-space', 'private-office', 'membership'];
+
 export default function App() {
   return (
     <div>
@@ -37,13 +39,25 @@ export default function App() {
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
       <Switch>
-        <ProtectedRoute exact path="/dashboard" component={Dashboard} />
-        <ProtectedRoute path={`/settings/:subpages`} component={Dashboard} />
-        {path.map((key, i) => {
+        {nav.map((key, i) => {
           return (
-            <ProtectedRoute exact path={`/${key}`} component={Dashboard} />
+            <ProtectedRoute
+              path={`/:path/:subpages/:id/:request`}
+              component={Dashboard}
+              key={i}
+            />
           );
         })}
+        {nav.map((key, i) => {
+          return (
+            <ProtectedRoute
+              path={`/:path/:subpages`}
+              component={Dashboard}
+              key={i}
+            />
+          );
+        })}
+        <ProtectedRoute exact path={`/:path`} component={Dashboard} />
         <Route path="/" component={LoginPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>

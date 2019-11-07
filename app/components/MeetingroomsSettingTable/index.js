@@ -7,12 +7,16 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { Add, Edit } from '@material-ui/icons';
+import { Add, Edit, Colorize } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import DeleteModal from 'components/DeleteModal';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
     backgroundColor: 'white',
     color: 'black',
+    width: 120,
   },
   body: {
     fontSize: 14,
@@ -28,47 +32,33 @@ const StyledTableRow = withStyles(theme => ({
 }))(TableRow);
 
 const columns = [
-  { id: 'id', label: 'Room id' },
-  { id: 'name', label: 'Name' },
+  { id: 'id', label: 'Room id', width: 120 },
+  { id: 'name', label: 'Name', width: 120 },
   {
     id: 'desc',
     label: 'Description',
+    width: 120,
   },
   {
     id: 'size',
     label: 'Size',
+    width: 120,
   },
   {
     id: 'rate',
     label: 'Rate',
+    width: 120,
   },
   {
     id: 'edit',
     label: 'Action',
+    width: 120,
   },
 ];
 
 function createData(id, name, desc, size, rate, edit) {
   return { id, name, desc, size, rate, edit };
 }
-
-const rows = [
-  createData('1', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('2', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('3', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('4', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('5', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('6', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('7', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('8', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('9', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('10', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('11', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('12', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('13', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('14', 'Mawar 1', 'Mawar 1', 200, 300000),
-  createData('15', 'Mawar 1', 'Mawar 1', 200, 300000),
-];
 
 const useStyles = makeStyles({
   root: {
@@ -81,10 +71,46 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MeetingroomsSettingTable() {
+export default function MeetingroomsSettingTable({
+  data,
+  deleteState,
+  deleteMeetingRooms,
+  addMeetingRoomsState,
+  addMeetingRooms,
+}) {
+  console.log('data', data);
   const classes = useStyles();
+  const rows = data;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [deletedId, setDelete] = React.useState('');
+  const [isMounted, setMounted] = React.useState(false);
+  const [formValue, setValue] = React.useState({
+    id: '',
+    name: '',
+    desc: '',
+    size: '',
+    rate: '',
+  });
+  const [isNew, setNew] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [dataId, setdataId] = React.useState('');
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleChange = e => {
+    setValue({
+      ...formValue,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const deleteRow = id => {
+    setdataId(id);
+    setOpen(true);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -94,6 +120,28 @@ export default function MeetingroomsSettingTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const handleAddRow = event => {
+    console.log('add');
+    setNew(true);
+  };
+
+  const handleAddState = event => {
+    addMeetingRoomsState(formValue);
+    addMeetingRooms(formValue);
+    setNew(false);
+    setValue({
+      id: '',
+      name: '',
+      desc: '',
+      size: '',
+      rate: '',
+    });
+  };
+
+  if (isMounted === false || data === undefined) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -132,9 +180,10 @@ export default function MeetingroomsSettingTable() {
               color: 'white',
               display: 'flex',
             }}
+            onClick={() => handleAddRow()}
           >
             <Add style={{ flexGrow: 1 }} />
-            <div style={{ flexGrow: 2 }}>Add New Room</div>
+            <div style={{ flexGrow: 2 }}>Add New Data</div>
           </button>
         </div>
       </div>
@@ -155,80 +204,224 @@ export default function MeetingroomsSettingTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(row => {
-                  return (
-                    <StyledTableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {columns.map(column => {
-                        const value = row[column.id];
-                        console.log(column);
-                        if (column.id === 'edit') {
-                          return (
-                            <StyledTableCell
-                              key={column.id}
-                              align={column.align}
-                            >
-                              <button
-                                style={{
-                                  display: 'flex',
-                                  padding: '5px',
-                                  background: '#438BF4',
-                                  color: 'white',
-                                  border: '2px solid transparent',
-                                  borderRadius: '5px',
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    flexGrow: 1,
-                                    marginLeft: '5px',
-                                  }}
-                                >
-                                  <Edit />
-                                </div>
-                                <div style={{ flexGrow: 2, marginLeft: '5px' }}>
-                                  Edit
-                                </div>
-                              </button>
-                            </StyledTableCell>
-                          );
-                        }
+              {isNew ? (
+                <StyledTableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key="new-row"
+                >
+                  {columns.map((column, i) => {
+                    if (column.id === 'edit') {
+                      return (
+                        <StyledTableCell key={column.id} align={column.align}>
+                          <button onClick={() => handleAddState()}>
+                            Tambah
+                          </button>
+                        </StyledTableCell>
+                      );
+                    }
+                    return (
+                      <StyledTableCell key={column.id} align={column.align}>
+                        <TextField
+                          id="standard-multiline-flexible"
+                          name={column.id}
+                          multiline
+                          rowsMax="4"
+                          onChange={handleChange}
+                          value={formValue[column.id]}
+                          margin="normal"
+                        />
+                      </StyledTableCell>
+                    );
+                  })}
+                </StyledTableRow>
+              ) : (
+                false
+              )}
+              {!data ? (
+                <div />
+              ) : (
+                <>
+                  {rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map(row => {
+                      if (row.id === deletedId) {
                         return (
-                          <StyledTableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </StyledTableCell>
+                          <StyledTableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            style={{
+                              visibility: 'hidden',
+                              opacity: 0,
+                              transition: 'visibility 0s 2s, opacity 2s linear',
+                            }}
+                            key={row.id}
+                          >
+                            {columns.map(column => {
+                              const value = row[column.id];
+                              if (column.id === 'edit') {
+                                return (
+                                  <StyledTableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ width: column.width }}
+                                  >
+                                    <Link
+                                      to={`/settings/meeting-rooms/${
+                                        row.id
+                                      }/edit`}
+                                    >
+                                      <button
+                                        style={{
+                                          display: 'flex',
+                                          padding: '5px',
+                                          background: '#438BF4',
+                                          color: 'white',
+                                          border: '2px solid transparent',
+                                          borderRadius: '5px',
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            flexGrow: 1,
+                                            marginLeft: '5px',
+                                          }}
+                                        >
+                                          <Edit />
+                                        </div>
+                                        <div
+                                          style={{
+                                            flexGrow: 2,
+                                            marginLeft: '5px',
+                                          }}
+                                        >
+                                          Edit
+                                        </div>
+                                      </button>
+                                    </Link>
+                                    <button onClick={() => deleteRow(row.id)}>
+                                      delete
+                                    </button>
+                                  </StyledTableCell>
+                                );
+                              }
+                              return (
+                                <StyledTableCell
+                                  key={column.id}
+                                  align={column.align}
+                                >
+                                  {column.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
+                                </StyledTableCell>
+                              );
+                            })}
+                          </StyledTableRow>
                         );
-                      })}
-                    </StyledTableRow>
-                  );
-                })}
+                      }
+                      return (
+                        <StyledTableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                        >
+                          {columns.map(column => {
+                            const value = row[column.id];
+                            if (column.id === 'edit') {
+                              return (
+                                <StyledTableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ width: column.width }}
+                                >
+                                  <Link
+                                    to={`/settings/meeting-rooms/${
+                                      row.id
+                                    }/edit`}
+                                  >
+                                    <button
+                                      style={{
+                                        display: 'flex',
+                                        padding: '5px',
+                                        background: '#438BF4',
+                                        color: 'white',
+                                        border: '2px solid transparent',
+                                        borderRadius: '5px',
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          flexGrow: 1,
+                                          marginLeft: '5px',
+                                        }}
+                                      >
+                                        <Edit />
+                                      </div>
+                                      <div
+                                        style={{
+                                          flexGrow: 2,
+                                          marginLeft: '5px',
+                                        }}
+                                      >
+                                        Edit
+                                      </div>
+                                    </button>
+                                  </Link>
+                                  <button onClick={() => deleteRow(row.id)}>
+                                    delete
+                                  </button>
+                                </StyledTableCell>
+                              );
+                            }
+                            return (
+                              <StyledTableCell
+                                key={column.id}
+                                align={column.align}
+                              >
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </StyledTableCell>
+                            );
+                          })}
+                        </StyledTableRow>
+                      );
+                    })}
+                </>
+              )}
             </TableBody>
           </Table>
         </div>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'previous page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'next page',
-          }}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+        {rows.lenght < 0 ? (
+          <div />
+        ) : (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'previous page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'next page',
+            }}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        )}
       </Paper>
+      <DeleteModal
+        deleteState={deleteState}
+        deleteMeetingRooms={deleteMeetingRooms}
+        open={open}
+        setOpen={setOpen}
+        id={dataId}
+      />
     </div>
   );
 }

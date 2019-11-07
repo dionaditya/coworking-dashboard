@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -10,15 +10,44 @@ import {
   makeSelectLoading,
 } from '../LoginPage/selectors';
 import { logout } from '../LoginPage/actions';
+import LoginPage from '../LoginPage/Loadable';
 
-const ProtectedRoute = ({ component: Component, loggedIn, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      loggedIn === true ? <Component {...props} /> : <Redirect to="/" />
+const ProtectedRoute = ({
+  component: Component,
+  loggedIn,
+  loading,
+  location,
+  ...rest
+}) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (loggedIn) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
     }
-  />
-);
+
+    console.log(location.pathname);
+  }, [loggedIn, loading]);
+
+  if (loading) {
+    return <div>loading</div>;
+  }
+
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isLoggedIn === true ? (
+          <Component {...props} />
+        ) : (
+          <LoginPage redirect={location.pathname} />
+        )
+      }
+    />
+  );
+};
 
 const mapStateToProps = createStructuredSelector({
   loading: makeSelectLoading(),

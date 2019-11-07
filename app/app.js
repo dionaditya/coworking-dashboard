@@ -18,6 +18,7 @@ import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 // Import root app
 import App from 'containers/App';
+import './app.css';
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';

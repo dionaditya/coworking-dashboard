@@ -35,7 +35,7 @@ function SubHeader(props) {
         }}
       >
         <Link
-          to={`/${props.path.slice(1, -10)}`}
+          to={`/${props.params.path}`}
           style={{
             border: '2px solid transparent',
             borderRight: '20px',
@@ -43,10 +43,10 @@ function SubHeader(props) {
         >
           {props.params.subpages ? (
             <div style={{ display: 'flex' }}>
-              <div>{props.path.slice(1, -10)}</div>
+              <div>{props.params.path}</div>
             </div>
           ) : (
-            <div>{props.path.slice(1)}</div>
+            <div>{props.params.path}</div>
           )}
         </Link>
         {props.params.subpages ? (

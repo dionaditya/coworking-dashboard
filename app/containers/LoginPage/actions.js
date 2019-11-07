@@ -10,6 +10,7 @@ export const types = {
     SUCCESS: 'LOGIN.SUCCESS',
     FAILURE: 'LOGIN.FAILURE',
     EMAIL: 'LOGIN.EMAIL',
+    LOADING: 'LOGIN.LOADING',
   },
   LOGOUT: {
     REQUEST: 'LOGOUT.REQUEST',
@@ -20,6 +21,10 @@ export const types = {
 
 export const login = () => ({
   type: types.LOGIN.REQUEST,
+});
+
+export const loading = () => ({
+  type: types.LOGIN.LOADING,
 });
 
 export function loginEmail(email, password) {
